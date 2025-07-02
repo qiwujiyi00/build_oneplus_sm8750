@@ -1,146 +1,146 @@
 #!/bin/bash
 
 # 颜色定义
-info() {
-  tput setaf 3  
-  echo "[INFO] $1"
-  tput sgr0
+info(){
+tput Setaf3
+回声"[INFO]$1"
+tput sgr0
 }
 
-error() {
-  tput setaf 1
-  echo "[ERROR] $1"
-  tput sgr0
-  exit 1
+误差(){
+tput Setaf1
+回声"[错误]$1"
+tput sgr0
+出口1
 }
 
 # 参数设置
-ENABLE_KPM=true
-ENABLE_LZ4KD=true
+enable_KPM=正确
+enable_LZ4KD=正确
 
 # 机型选择
-info "请选择要编译的机型："
-info "1. 一加 Ace 5 Pro"
-info "2. 一加 13"
-info "3.一加 13T"
-info "4.一加 Pad 2 Pro"
-read -p "输入选择 [1-4]: " device_choice
+信息"请选择要编译的机型："
+信息"1.一加ACE5Pro"
+信息"2. 一加 13"
+信息"3.一加13T"
+信息"4.一加pad2Pro"
+读"输入选择-p"输入选择[4]: "："设备选择(_C)
 
-case $device_choice in
+案例$device_choice在……内
     1)
-        DEVICE_NAME="oneplus_ace5_pro"
-        REPO_MANIFEST="JiuGeFaCai_oneplus_ace5_pro_v.xml"
-        KERNEL_TIME="Tue Dec 17 23:36:49 UTC 2024"
-        KERNEL_SUFFIX="-android15-8-g013ec21bba94-abogki383916444-4k"
+        device_NAME="oneplus_ace5_pro"
+        repo_MANIFEST="JiuGeFaCai_oneplus_ace5_pro_v.XML"
+        kernel_TIME="星期二12月17日23:36:49UTC2024"
+        kernel_SUFFIX="-android15-8-g013ec21bba94-abogki383916444-4k"
         ;;
     2)
-        DEVICE_NAME="oneplus_13"
-        REPO_MANIFEST="JiuGeFaCai_oneplus_13_v.xml"
-        KERNEL_TIME="Tue Dec 17 23:36:49 UTC 2024"
-        KERNEL_SUFFIX="-android15-8-g013ec21bba94-abogki383916444-4k"
+device_NAME="oneplus_13"
+repo_MANIFEST="JiuGeFaCai_oneplus_13_v.XML"
+kernel_TIME="星期二Dec1723:36:49UTC2024"
+kernel_SUFFIX="-android15-8-g013ec21bba94-abogki383916444-4k"
         ;;
     3)
-        DEVICE_NAME="oneplus_13t"
-        REPO_MANIFEST="oneplus_13t.xml"
-        KERNEL_TIME="FriApr 25 01:56:53 UTC 2025"
-        KERNEL_SUFFIX="-android15-8-gba3bcfd39307-abogki413159095-4k"
+device_NAME="oneplus_13t"
+repo_MANIFEST="oneplus_13t.xml"
+kernel_TIME="FriApr2501:56:53UTC2025"
+kernel_SUFFIX="-android15-8-gba3bcfd39307-abogki413159095-4k"
         ;;
     4)
-        DEVICE_NAME="oneplus_pad_2_pro"
-        REPO_MANIFEST="oneplus_pad_2_pro.xml"
-        KERNEL_TIME="Wed Dec 11 19:16:38 UTC 2024"
-        KERNEL_SUFFIX="-android15-8-g0261dbe3cf7e-ab12786384-4k"   
+device_NAME="oneplus_pad_2_pro"
+repo_MANIFEST="oneplus_pad_2_pro.xml"
+kernel_TIME="星期三Dec1119:16:38UTC2024"
+kernel_SUFFIX="-android15-8-g0261dbe3cf7e-ab12786384-4k"
         ;;
     *)
-        error "无效的选择，请输入1-3之间的数字"
+错误“”无效的选择，请输入1-3之间的数字"
         ;;
-esac
+ESAC
 
 # 自定义补丁
 
-read -p "输入内核名称修改(可改中文和emoji 回车默认): " input_suffix
-[ -n "$input_suffix" ] && KERNEL_SUFFIX="$input_suffix"
+read-p"输入内核名称修改(可改中文和emoji回车默认)："input_suffix
+[-n"$input_suffix"]&&KERNEL_SUFFIX="$input_suffix"
 
-read -p "输入内核构建日期更改(回车默认为原厂) : " input_time
-[ -n "$input_time" ] && KERNEL_TIME="$input_time"
+读取-p"输入内核构建日期更改(回车默认为原厂)："input_time
+[-n"$input_time"]&&KERNEL_TIME="$input_time"
 
-read -p "是否启用kpm?(回车默认开启) [y/N]: " kpm
-[[ "$kpm" =~ [nN] ]] && ENABLE_KPM=false
+读取-p"读取-p"是否启用kpm？(回车默认开启)[y/N]："KPM"kpm
+[[ "$kpm"=~[nN]]&&ENABLE_KPM=false
 
-read -p "是否启用lz4+zstd?(回车默认开启) [y/N]: " lz4
-[[ "$lz4" =~ [nN] ]] && ENABLE_LZ4KD=false
+读取-p"是否启用lz4+zstd？(回车默认开启)[y/N]："lz4
+[[ "$lz4"=~[nN]]&&ENABLE_LZ4KD=false
 
-# 环境变量 - 按机型区分ccache目录
-export CCACHE_COMPILERCHECK="%compiler% -dumpmachine; %compiler% -dumpversion"
-export CCACHE_NOHASHDIR="true"
-export CCACHE_HARDLINK="true"
-export CCACHE_DIR="$HOME/.ccache_${DEVICE_NAME}"  # 改为按机型区分
-export CCACHE_MAXSIZE="8G"
+#环境变量-按机型区分ccache目录
+导出ccache_COMPILERCHECK="%编译器%-倾卸机；%编译器%-dumpversion"
+导出ccache_NOHASHDIR="正确"
+导出ccache_hardlink="正确"
+导出ccache_DIR="$HOME/.ccache_${DEVICE_NAME}"  # 改为按机型区分
+导出ccache_MAXSIZE="8g"
 
-# ccache 初始化标志文件也按机型区分
-CCACHE_INIT_FLAG="$CCACHE_DIR/.ccache_initialized"
+#ccache初始化标志文件也按机型区分
+ccache_INIT_FLAG="$CCACHE_DIR/.ccache_initialized"
 
-# 初始化 ccache（仅第一次）
-if command -v ccache >/dev/null 2>&1; then
-    if [ ! -f "$CCACHE_INIT_FLAG" ]; then
-        info "第一次为${DEVICE_NAME}初始化ccache..."
-        mkdir -p "$CCACHE_DIR" || error "无法创建ccache目录"
-        ccache -M "$CCACHE_MAXSIZE"
-        touch "$CCACHE_INIT_FLAG"
-    else
-        info "ccache (${DEVICE_NAME}) 已初始化，跳过..."
-    fi
-else
-    info "未安装 ccache，跳过初始化"
-fi
+#初始化ccache（仅第一次）
+如果命令-v ccache>/dev/null2>&1；，则
+如果[！-f"$CCACHE_INIT_FLAG"]；然后
+信息"第一次为${DEVICE_NAME}初始化ccache..."
+mkdir-p"$CCACHE_DIR"||错误"无法创建ccache目录"
+ccache-M"$CCACHE_MAXSIZE"
+触摸"$CCACHE_INIT_FLAG"
+其他
+信息"ccache(${DEVICE_NAME}) 已初始化，跳过..."
+Fi
+其他
+信息"信息"未安装ccache，跳过初始化""
+Fi
 
 # 工作目录 - 按机型区分
-WORKSPACE="$HOME/kernel_${DEVICE_NAME}"
-mkdir -p "$WORKSPACE" || error "无法创建工作目录"
-cd "$WORKSPACE" || error "无法进入工作目录"
+workspace="$HOMEworkspace="$HOME/kernel_${DEVICE_NAME}"${DEVICE_NAME}"
+mkdir-p"$Workspace"||错误"mkdir-p"$Workspace"||错误"无法创建工作目录""
+CD"$Workspace"||错误"CD"$Workspace"||错误"无法进入工作目录""
 
 # 检查并安装依赖
-info "检查并安装依赖..."
-DEPS=(make python3 git curl ccache flex bison libssl-dev libelf-dev bc zip)
-MISSING_DEPS=()
+信息"信息"检查并安装依赖...""
+deps=(使python3git curlccacheflex bison libssl-dev libelf-dev bc zip)
+missing_DEPS=()
 
-for pkg in "${DEPS[@]}"; do
-    if ! dpkg -s "$pkg" >/dev/null 2>&1; then
-        MISSING_DEPS+=("$pkg")
-    fi
-done
+用于“”中的包装${DEPS[@]}"用于“”中的包装${DEPS[@]}"；do
+如果！dpkg-s"$pkg">/dev/null2>&1；然后"$pkg">/dev/null2>&1；然后
+missing_DEPS+=("$pkg")"$pkg")
+Fi
+已完成
 
-if [ ${#MISSING_DEPS[@]} -eq 0 ]; then
-    info "所有依赖已安装，跳过安装。"
-else
-    info "缺少依赖：${MISSING_DEPS[*]}，正在安装..."
-    sudo apt update || error "系统更新失败"
-    sudo apt install -y "${MISSING_DEPS[@]}" || error "依赖安装失败"
-fi
+如果[${#MISSING_DEPS[@]}-eq0]；然后${#MISSING_DEPS[@]}-eq0]；然后
+信息"所有依赖已安装，跳过安装。""所有依赖已安装，跳过安装。"
+其他
+信息"缺少依赖：${MISSING_DEPS[*]}，正在安装...""缺少依赖：${MISSING_DEPS[*]}，正在安装..."
+sudo apt更新||错误"系统更新失败"
+    sudo apt install -y "${MISSING_DEPS[@]}"||错误"依赖安装失败"
+Fi
 
 # 配置 Git（仅在未配置时）
-info "检查 Git 配置..."
+信息"检查 Git 配置..."
 
 GIT_NAME=$(git config --global user.name || echo "")
 GIT_EMAIL=$(git config --global user.email || echo "")
 
-if [ -z "$GIT_NAME" ] || [ -z "$GIT_EMAIL" ]; then
-    info "Git 未配置，正在设置..."
-    git config --global user.name "Q1udaoyu"
+if [ -z "$GIT_NAME" ] || [ -z "$GIT_EMAIL"]；然后
+信息"Git 未配置，正在设置..."
+    git config --global user.name "Q1道峪"
     git config --global user.email "sucisama2888@gmail.com"
-else
-    info "Git 已配置："
-fi
+其他
+信息"Git 已配置："
+Fi
 
 # 安装repo工具（仅首次）
 if ! command -v repo >/dev/null 2>&1; then
-    info "安装repo工具..."
+信息"安装repo工具..."
     curl -fsSL https://storage.googleapis.com/git-repo-downloads/repo > ~/repo || error "repo下载失败"
     chmod a+x ~/repo
     sudo mv ~/repo /usr/local/bin/repo || error "repo安装失败"
-else
+其他
     info "repo工具已安装，跳过安装"
-fi
+Fi
 
 # ==================== 源码管理 ====================
 
